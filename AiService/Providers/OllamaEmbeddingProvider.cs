@@ -19,9 +19,19 @@ namespace AiService.Providers
             return arr;
         }
 
-        public Task<float[][]> EmbedBatchAsync(IEnumerable<string> texts, CancellationToken cancellationToken)
+        public async Task<float[][]> EmbedBatchAsync(IEnumerable<string> texts, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            var results = new List<float[]>();
+            foreach (var text in texts)
+            {
+                var body = new { model = _model, prompt = text };
+                using var res = await http.PostAsJsonAsync("/api/embeddings", body, ct);
+                res.EnsureSuccessStatusCode();
+                var json = JObject.Parse(await res.Content.ReadAsStringAsync()); //[0.2345, -0.1234, 0.8765, ...]
+                var arr = json["embedding"]!.Select(t => (float)t!.Value<double>()).ToArray();
+                results.Add(arr);
+            }
+            return results.ToArray();
         }
     }
 }
