@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using AiService.Models;
+using System.ComponentModel;
 
 namespace AiService.Repositories
 {
