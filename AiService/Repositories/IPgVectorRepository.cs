@@ -5,7 +5,7 @@ namespace AiService.Repositories
 {
     public interface IPgVectorRepository
     {
-        Task InsertVectorAsync(
+        Task InsertProductVectorAsync(
             string productId,
             string name,
             string summary,
@@ -15,6 +15,7 @@ namespace AiService.Repositories
             string brandName,
             string typeId,
             string typeName,
+            decimal price,
             DateTimeOffset createdDate,
             float[] embedding);
 
@@ -22,6 +23,6 @@ namespace AiService.Repositories
 
         Task<IEnumerable<Product>> SearchByKeywordAsync(string keyword, int topK = 5);
 
-        Task<IEnumerable<Product>> SearchByVectorAsync(string query, float[] queryVector, int topK = 5);
+        Task<IEnumerable<Product>> SearchByHybridAsync(string query, float[] queryVector, int topK = 5);
     }
 }

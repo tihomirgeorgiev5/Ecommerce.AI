@@ -1,4 +1,5 @@
 ﻿using AiService.Models;
+using Dapper;
 using Npgsql;
 
 namespace AiService.Repositories
@@ -11,7 +12,71 @@ namespace AiService.Repositories
         {
             _dataSource = dataSource;
         }
-        public Task InsertVectorAsync(string productId, string name, string summary, string description, string imageFile, string brandId, string brandName, string typeId, string typeName, DateTimeOffset createdDate, float[] embedding)
+        public async Task InsertProductVectorAsync(
+            string productId,
+            string name,
+            string summary,
+            string description,
+            string imageFile,
+            string brandId,
+            string brandName,
+            string typeId,
+            string typeName,
+            decimal price,
+            DateTimeOffset createdDate,
+            float[] embedding)
+        {
+            // Decide target columns based on the embedding dimension
+            string embeddingColumn = embedding.Length switch
+            {
+                1536 => "embedding_1536",
+                768 => "embedding_768",
+                3072 => "embedding_3072", // future proof
+                _ => throw new InvalidOperationException(
+                    $"Unsupported embedding size {embedding.Length}. Expected 768, 1536 or 3072.")
+            };
+            await using var conn = await _dataSource.OpenConnectionAsync();
+
+            string sql = $@"
+                INSERT INTO product_vectors
+                (product_id, name, summary, description, image_file,
+                 brand_id, brand_name, type_id, type_name,
+                 price, created_date, {embeddingColumn})
+                VALUES 
+                (@ProductId, @Name, @Summary, @Description, @ImageFile,
+                    @BrandId, @BrandName, @TypeId, @TypeName,
+                    @Price, @CreatedDate, @Embedding)
+                  ON CONFLICT (product_id) DO UPDATE 
+                  SET {embeddingColumn} = EXCLUDED.{embeddingColumn},
+                      name = EXCLUDED.name,
+                      summary = EXCLUDED.summary,
+                      description = EXCLUDED.description,
+                      image_file = EXCLUDED.image_file,
+                      brand_id = EXCLUDED.brand_id,
+                      brand_name = EXCLUDED.brand_name,
+                      type_id = EXCLUDED.type_id,
+                      type_name = EXCLUDED.type_name,
+                      price = EXCLUDED.price,
+                      created_date = EXCLUDED.created_date; ";
+
+            await conn.ExecuteAsync(sql, new
+            {
+                ProductId = productId,
+                Name = name,
+                Summary = summary,
+                Description = description,
+                ImageFile = imageFile,
+                BrandId = brandId,
+                BrandName = brandName,
+                TypeId = typeId,
+                Price = price,
+                CreatedDate = createdDate,
+                TypeName = typeName,
+                Embedding = embedding
+            });
+        }
+
+        public Task<IEnumerable<Product>> SearchByVectorAsync(float[] queryVector, int topK = 5)
         {
             throw new NotImplementedException();
         }
@@ -21,14 +86,13 @@ namespace AiService.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Product>> SearchByVectorAsync(float[] queryVector, int topK = 5)
+
+        public Task<IEnumerable<Product>> SearchByHybridAsync(string query, float[] queryVector, int topK = 5)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Product>> SearchByVectorAsync(string query, float[] queryVector, int topK = 5)
-        {
-            throw new NotImplementedException();
-        }
+       
+        
     }
 }
