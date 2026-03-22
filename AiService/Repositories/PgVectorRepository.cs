@@ -90,28 +90,51 @@ namespace AiService.Repositories
                 $"Unsupported embedding size {queryVector.Length}. Expected 768, 1536 or 3072.")
         };
             string sql = $@"
-    SELECT
-      product_id AS id,
-      name,
-      description,
-      image_file AS ""imageFile"",
-      price,
-      brand_id AS brandName,
-      brand_name AS brandName,
-      type_id AS typeId,
-      type_name AS typeName,
-      1 - ({embeddingColumn} <=> @QueryVector::vector) AS similarity
-    FROM prooduct_vectors
-    ORDER BY similarity DESC
-    LIMIT @TopK";
+                SELECT
+                    product_id AS id,
+                    name,
+                    description,
+                    image_file AS ""imageFile"",
+                    price,
+                    brand_id AS brandName,
+                    brand_name AS brandName,
+                    type_id AS typeId,
+                    type_name AS typeName,
+                    1 - ({embeddingColumn} <=> @QueryVector::vector) AS similarity
+                FROM prooduct_vectors
+                ORDER BY similarity DESC
+                LIMIT @TopK";
+
             var rows = await conn.QueryAsync<Product>(sql, new { QueryVector = queryVector, TopK = topK });
             return rows.Select(MapToProduct);
         }
 
 
-        public Task<IEnumerable<Product>> SearchByKeywordAsync(string keyword, int topK = 5)
+        public async Task<IEnumerable<Product>> SearchByKeywordAsync(string keyword, int topK = 5)
         {
-            throw new NotImplementedException();
+            await using var conn = await _dataSource.OpenConnectionAsync();
+            var rows = await conn.QueryAsync(@"
+                SELECT
+                    product_id AS id,
+                    name,
+                    description,
+                    image_file AS ""imageFile"",
+                    price,
+                    brand_id AS brandName,
+                    brand_name AS brandName,
+                    type_id AS typeId,
+                    type_name AS typeName
+                FROM product_vectors
+                WHERE 
+                    name ILIKE @Pattern OR
+                    summary ILIKE @Pattern OR 
+                    description ILIKE @Pattern OR
+                    brand_name ILIKE @Pattern OR
+                    type_name ILIKE @Pattern 
+                LIMIT @TopK",
+                new { Keyword = $"%{keyword}%", TopK = topK });
+
+            return rows.Select(MapToProduct);
         }
 
 
