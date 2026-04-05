@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AiService.Endpoints
 {
-    public static class SemanticEndPoints
+    public static class SemanticDataEndPoints
     {
         public static IEndpointRouteBuilder MapSemanticData(this IEndpointRouteBuilder app)
         {
