@@ -11,6 +11,6 @@ namespace AiService.Services
         Task<ChatResponse> AskAsync(
             string userQuery,
             CancellationToken cancellationToken = default,
-            IEnumerable<(string Role, string Content)>? chatHistory = null);
+            IEnumerable<(string Role, string Content)>? chatHistory = null); //Making Context Aware by passing chat history
     }
 }
