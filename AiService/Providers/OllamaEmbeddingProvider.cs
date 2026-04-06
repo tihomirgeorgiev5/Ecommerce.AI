@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Runtime.InteropServices.JavaScript;
 
 namespace AiService.Providers
 {
@@ -7,7 +6,7 @@ namespace AiService.Providers
     {
         private readonly string _model = cfg["Ollama:EmbeddingModel"] ?? "nomic-embed-text";
 
-        public int Dimension => int.TryParse(cfg["Ollama:Dimensions"], out var d) ? d : 768;
+        public int Dimensions => int.TryParse(cfg["Ollama:Dimensions"], out var d) ? d : 768;
 
         public async Task<float[]> EmbedAsync(string text, CancellationToken ct = default) 
         {

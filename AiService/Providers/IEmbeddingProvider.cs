@@ -6,6 +6,6 @@
 
         Task<float[][]> EmbedBatchAsync(IEnumerable<string> texts, CancellationToken cancellationToken);
 
-        int Dimension { get; } // eg 768, 1536
+        int Dimensions { get; } // eg 768, 1536
     }
 }
