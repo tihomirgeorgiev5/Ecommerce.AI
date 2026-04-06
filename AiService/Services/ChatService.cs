@@ -41,7 +41,7 @@ namespace AiService.Services
                     );
                 }
 
-            // 1. Get embedding for the user query
+            //1. Get embedding for the user query
             var queryVector = await _embeddingProvider.EmbedAsync(userQuery, cancellationToken);
 
             //2. Try Hybrid search
@@ -49,6 +49,7 @@ namespace AiService.Services
 
             string conversationalContext = BuildConversationContext(chatHistory);
 
+            //3. If Products found
             if (results.Any())
             {
                 // Build product context for the LLM
@@ -78,7 +79,7 @@ namespace AiService.Services
                 );
             }
 
-            //3. If Products found
+            // 4. Fallback to web search
             var webResults = await _webSearchProvider.SearchAsync(userQuery, cancellationToken);
             var fallbackPrompt = $"{conversationalContext}\nUser asked: {userQuery}\nI couldn't find results in the product database. Here is what I found on the web: \n{webResults}\n\nSummarize helpfully.";
             var fallbackAnswer = await _chatProvider.ChatAsync(fallbackPrompt, cancellationToken);
