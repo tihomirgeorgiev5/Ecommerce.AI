@@ -1,4 +1,7 @@
+using AiService.Endpoints;
+using AiService.Providers;
 using AiService.Repositories;
+using AiService.Services;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,5 +37,53 @@ var provider = cfg["EmbeddingProvider"]?.ToLowerInvariant() ?? "Ollama";
 //{
     
 //}
+
+//Embeddings
+builder.Services.AddHttpClient<IEmbeddingProvider, OllamaEmbeddingProvider>(client =>
+{
+    client.BaseAddress = new Uri(cfg["Ollama:BaseUrl"] ?? "http://localhost:11434/");
+    client.Timeout = TimeSpan.FromSeconds(5);
+});
+
+//Chat
+builder.Services.AddHttpClient<IChatProvider, OllamaChatProvider>(client =>
+{
+    client.BaseAddress = new Uri(cfg["Ollama:BaseUrl"] ?? "http://localhost:11434/");
+    client.Timeout = TimeSpan.FromSeconds(5);
+});
+
+//Web Search Provider
+builder.Services.AddSingleton<IWebSearchProvider, WebSearchProvider>();
+
+//Chat Service
+builder.Services.AddScoped<IChatService, ChatService>();
+
+//Http Client Factory
+builder.Services.AddHttpClient("CatalogApi", client =>
+{
+    client.BaseAddress = new Uri(cfg["OcelotGateway:BaseUrl"] ?? "http://localhost:8010");
+});
+
+//Build app
+var app = builder.Build();
+
+//Enable swagger
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseCors("AllowAll");
+
+//EndPoints
+app.MapEmbeddingTest();
+app.MapChat();
+app.MapSemanticData();
+app.MapSemanticSearch();
+
+app.MapGet("/health", () => Results.Ok("Ok"));
+
+app.Run();
 
 
