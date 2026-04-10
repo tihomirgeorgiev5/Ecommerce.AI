@@ -1,41 +1,38 @@
+using AiService.Repositories;
+using Npgsql;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//Enable Cors
+builder.Services.AddCors(options =>
 {
-    app.MapOpenApi();
-}
+    options.AddPolicy("AllowAll", policy =>
+            policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+    
+});
 
-app.UseHttpsRedirection();
+var cfg = builder.Configuration;
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+//PostGresSQL + Vector
 
-app.Run();
+var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(cfg.GetConnectionString("PgVector"));
+dataSourceBuilder.UseVector();
+var dataSource = dataSourceBuilder.Build();
+builder.Services.AddSingleton(dataSource);
+builder.Services.AddSingleton<IPgVectorRepository, PgVectorRepository>();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+//Embedding + Chat Provider
+var provider = cfg["EmbeddingProvider"]?.ToLowerInvariant() ?? "Ollama";
+
+//TODO: Add more providers and switch between them based on configuration 
+//switch (provider)
+//{
+    
+//}
+
+
