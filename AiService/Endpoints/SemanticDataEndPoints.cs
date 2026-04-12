@@ -18,7 +18,7 @@ namespace AiService.Endpoints
             {
                 var client = http.CreateClient("CatalogApi");
                 var response = await client.GetFromJsonAsync<CatalogResponse>(
-                    "Catalog/GetAllProducts?pageIndex=1&pageSize=100", ct);
+                    "api/v1/Catalog/GetAllProducts?pageIndex=1&pageSize=100", ct);
 
                 if (response?.Data == null || response.Data.Count == 0)
                     return Results.BadRequest("No products found");
