@@ -11,6 +11,7 @@ namespace AiService.Providers
         public async Task<float[]> EmbedAsync(string text, CancellationToken ct = default) 
         {
             var body = new { model = _model, prompt = text };
+            Console.WriteLine($"Embedding: {text.Substring(0, Math.Min(50, text.Length))}...");
             using var res = await http.PostAsJsonAsync("/api/embeddings", body, ct);
             res.EnsureSuccessStatusCode();
             var json = JObject.Parse(await res.Content.ReadAsStringAsync()); //[0.2345, -0.1234, 0.8765, ...]
@@ -24,6 +25,7 @@ namespace AiService.Providers
             foreach (var text in texts)
             {
                 var body = new { model = _model, prompt = text };
+                Console.WriteLine($"Embedding: {text.Substring(0, Math.Min(50, text.Length))}...");
                 using var res = await http.PostAsJsonAsync("/api/embeddings", body, ct);
                 res.EnsureSuccessStatusCode();
                 var json = JObject.Parse(await res.Content.ReadAsStringAsync()); //[0.2345, -0.1234, 0.8765, ...]
