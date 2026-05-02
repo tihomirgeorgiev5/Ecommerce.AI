@@ -96,16 +96,16 @@ namespace AiService.Repositories
                     description,
                     image_file AS ""imageFile"",
                     price,
-                    brand_id AS brandName,
+                    brand_id AS brandId,
                     brand_name AS brandName,
                     type_id AS typeId,
                     type_name AS typeName,
                     1 - ({embeddingColumn} <=> @QueryVector::vector) AS similarity
-                FROM prooduct_vectors
+                FROM product_vectors
                 ORDER BY similarity DESC
                 LIMIT @TopK";
 
-            var rows = await conn.QueryAsync<Product>(sql, new { QueryVector = queryVector, TopK = topK });
+            var rows = await conn.QueryAsync(sql, new { QueryVector = queryVector, TopK = topK });
             return rows.Select(MapToProduct);
         }
 
@@ -120,7 +120,7 @@ namespace AiService.Repositories
                     description,
                     image_file AS ""imageFile"",
                     price,
-                    brand_id AS brandName,
+                    brand_id AS brandId,
                     brand_name AS brandName,
                     type_id AS typeId,
                     type_name AS typeName
@@ -149,7 +149,7 @@ namespace AiService.Repositories
                     description,
                     image_file AS ""imageFile"",
                     price,
-                    brand_id AS brandName,
+                    brand_id AS brandId,
                     brand_name AS brandName,
                     type_id AS typeId,
                     type_name AS typeName
@@ -178,12 +178,12 @@ namespace AiService.Repositories
                     description,
                     image_file AS ""imageFile"",
                     price,
-                    brand_id AS brandName,
+                    brand_id AS brandId,
                     brand_name AS brandName,
                     type_id AS typeId,
                     type_name AS typeName,
                     1 - ({embeddingColumn} <=> @QueryVector::vector) AS similarity
-                FROM prooduct_vectors
+                FROM product_vectors
                 ORDER BY similarity DESC
                 LIMIT @TopK",
                 new { QueryVector = queryVector, TopK = topK });
