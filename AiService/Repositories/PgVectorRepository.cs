@@ -132,7 +132,7 @@ namespace AiService.Repositories
                     brand_name ILIKE @Pattern OR
                     type_name ILIKE @Pattern 
                 LIMIT @TopK",
-                new { Keyword = $"%{keyword}%", TopK = topK });
+                new { Pattern = $"%{keyword}%", TopK = topK });
 
             return rows.Select(MapToProduct);
         }
