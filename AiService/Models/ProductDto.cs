@@ -7,8 +7,8 @@
         string Summary,
         string Description,
         string ImageFile,
-        ProductBrand Brand,
-        ProductType Type,
+        ProductBrand Brands,
+        ProductType Types,
         decimal Price,
         DateTimeOffset CreatedDate
 

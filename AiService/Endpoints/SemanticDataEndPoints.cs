@@ -31,7 +31,7 @@ namespace AiService.Endpoints
                     var batch = response.Data.Skip(i).Take(batchSize).ToList();
 
                     // Prepare texts for embedding
-                    var texts = batch.Select(p => $"{p.Name} {p.Summary} {p.Description} {p.Brand?.Name} {p.Type?.Name}").ToArray();
+                    var texts = batch.Select(p => $"{p.Name} {p.Summary} {p.Description} {p.Brands?.Name} {p.Types?.Name}").ToArray();
 
                     float[][] vectors;
                     try
@@ -55,10 +55,10 @@ namespace AiService.Endpoints
                             product.Summary,
                             product.Description,
                             product.ImageFile,
-                            product.Brand?.Id ?? string.Empty,
-                            product.Brand?.Name ?? string.Empty,
-                            product.Type?.Id ?? string.Empty,
-                            product.Type?.Name ?? string.Empty,
+                            product.Brands?.Id ?? string.Empty,
+                            product.Brands?.Name ?? string.Empty,
+                            product.Types?.Id ?? string.Empty,
+                            product.Types?.Name ?? string.Empty,
                             product.Price,
                             product.CreatedDate,
                             vector

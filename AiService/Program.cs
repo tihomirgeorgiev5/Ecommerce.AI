@@ -42,14 +42,14 @@ var provider = cfg["EmbeddingProvider"]?.ToLowerInvariant() ?? "Ollama";
 builder.Services.AddHttpClient<IEmbeddingProvider, OllamaEmbeddingProvider>(client =>
 {
     client.BaseAddress = new Uri(cfg["Ollama:BaseUrl"] ?? "http://localhost:11434/");
-    client.Timeout = TimeSpan.FromSeconds(300);
+    client.Timeout = TimeSpan.FromSeconds(60);
 });
 
 //Chat
 builder.Services.AddHttpClient<IChatProvider, OllamaChatProvider>(client =>
 {
     client.BaseAddress = new Uri(cfg["Ollama:BaseUrl"] ?? "http://localhost:11434/");
-    client.Timeout = TimeSpan.FromSeconds(5);
+    client.Timeout = TimeSpan.FromSeconds(60);
 });
 
 //Web Search Provider

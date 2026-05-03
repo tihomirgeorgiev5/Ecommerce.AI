@@ -200,8 +200,8 @@ namespace AiService.Repositories
                 Description: row.description,
                 ImageFile: row.imageFile,
                 Price: row.price,
-                Brand: new Brand(row.brandId, row.brandName),
-                Type: new Models.Type(row.typeId, row.typeName)
+                Brand: new Brand(row.brandid, row.brandname),
+                Type: new Models.Type(row.typeid, row.typename)
             );
         }
 
