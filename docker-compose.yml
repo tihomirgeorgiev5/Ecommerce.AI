@@ -6,9 +6,15 @@ services:
     ports:
       - "8090:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+       - ASPNETCORE_ENVIRONMENT=Development
+       - "ASPNETCORE_URLS=http://+:8080"
+       - OcelotGateway__BaseUrl=http://host.docker.internal:8000/
+       - ConnectionStrings__PgVector=Host=pgvector;Port=5432;Database=aivector;Username=aiuser;Password=aiPass123
+       - Ollama__BaseUrl=http://ollama:11434/
+       - "AzureOpenAI__ApiKey=${AZURE_OPENAI_KEY}"
     depends_on:
-      - pgvector    
+      pgvector:
+        condition: service_healthy
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
