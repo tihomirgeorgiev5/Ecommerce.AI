@@ -1,0 +1,129 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: #131921;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  &__logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ff9900;
+    text-decoration: none;
+  }
+
+  &__departments {
+    margin-left: 1rem;
+    padding: 0.5rem 1rem;
+    background: #232f3e;
+    border: none;
+    border-radius: 0.25rem;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #37475a;
+    }
+  }
+
+  &__center {
+    display: flex;
+    flex: 1;
+    max-width: 600px;
+    margin: 0 1rem;
+
+    .navbar__category {
+      padding: 0.5rem;
+      border: none;
+      background: #f0f0f0;
+      border-radius: 0.25rem 0 0 0.25rem;
+    }
+
+    .navbar__search {
+      flex: 1;
+      padding: 0.5rem;
+      border: none;
+    }
+
+    .navbar__search-btn {
+      padding: 0.5rem 1rem;
+      background: #ff9900;
+      border: none;
+      border-radius: 0 0.25rem 0.25rem 0;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: #f0ad4e;
+      }
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    .navbar__link {
+      font-size: 0.85rem;
+      color: white;
+      text-decoration: none;
+      cursor: pointer;
+
+      span {
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .navbar__logout {
+      background: transparent;
+      border: 1px solid #ff9900;
+      color: #ff9900;
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.25rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #ff9900;
+        color: #131921;
+      }
+    }
+
+    .navbar__cart {
+      position: relative;
+
+      .navbar__cart-badge {
+        position: absolute;
+        top: -6px;
+        right: -14px;
+        background: #ff9900;
+        color: black;
+        font-size: 0.75rem;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 9999px;
+      }
+    }
+  }
+  .navbar__mode {
+    margin-left: 0.5rem;
+    padding: 0.5rem;
+    border: none;
+    background: #f0f0f0;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
+}
