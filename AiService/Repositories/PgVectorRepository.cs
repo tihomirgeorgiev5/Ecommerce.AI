@@ -76,7 +76,7 @@ namespace AiService.Repositories
             });
         }
 
-        public async Task<IEnumerable<Product>> SearchByVectorAsync(float[] queryVector, int topK = 5)
+        public async Task<IEnumerable<Product>> SearchByVectorAsync(float[] queryVector, int topK = 10)
         {
             await using var conn = await _dataSource.OpenConnectionAsync();
 
@@ -110,7 +110,7 @@ namespace AiService.Repositories
         }
 
 
-        public async Task<IEnumerable<Product>> SearchByKeywordAsync(string keyword, int topK = 5)
+        public async Task<IEnumerable<Product>> SearchByKeywordAsync(string keyword, int topK = 10)
         {
             await using var conn = await _dataSource.OpenConnectionAsync();
             var rows = await conn.QueryAsync(@"
@@ -138,7 +138,7 @@ namespace AiService.Repositories
         }
 
 
-        public async Task<IEnumerable<Product>> SearchByHybridAsync(string query, float[] queryVector, int topK = 5)
+        public async Task<IEnumerable<Product>> SearchByHybridAsync(string query, float[] queryVector, int topK = 10)
         {
             await using var conn = await _dataSource.OpenConnectionAsync();
 

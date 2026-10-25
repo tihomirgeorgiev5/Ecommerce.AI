@@ -19,10 +19,10 @@ namespace AiService.Repositories
             DateTimeOffset createdDate,
             float[] embedding);
 
-        Task<IEnumerable<Product>> SearchByVectorAsync(float[] queryVector, int topK = 5);
+        Task<IEnumerable<Product>> SearchByVectorAsync(float[] queryVector, int topK = 10);
 
-        Task<IEnumerable<Product>> SearchByKeywordAsync(string keyword, int topK = 5);
+        Task<IEnumerable<Product>> SearchByKeywordAsync(string keyword, int topK = 10);
 
-        Task<IEnumerable<Product>> SearchByHybridAsync(string query, float[] queryVector, int topK = 5);
+        Task<IEnumerable<Product>> SearchByHybridAsync(string query, float[] queryVector, int topK = 10);
     }
 }

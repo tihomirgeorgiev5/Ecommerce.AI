@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { CatalogResponse } from '../models/CatalogResponse';
 import { Brand } from '../models/Brand';
 import { Type } from '../models/Type';
 import { Product } from '../models/Product';
+
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
@@ -44,16 +45,26 @@ export class ProductService {
     return this.http.get<Product>(`${this.baseUrl}/${id}`);
   }
 
-  searchSemantic(query: string, topK: number = 10): Observable<Product[]>{
-    return this.http.post<Product[]>(`${this.aiUrl}/search/vector`, {
-      query,
-      topK
-    });
+  private normalize(p: any): Product {
+    return {
+      ...p,
+      summary: p.summary ?? p.description ?? '',
+      brands: p.brands ?? p.brand,
+      types: p.types ?? p.type,
+    };
   }
-  searchHybrid(query: string, topK: number = 10): Observable<Product[]>{
-    return this.http.post<Product[]>(`${this.aiUrl}/search/hybrid`, {
-      query,
-      topK
-    }); 
+
+  searchSemantic(query: string, topK: number = 10): Observable<Product[]> {
+    return this.http
+      .post<any[]>(`${this.aiUrl}/search/vector`, { query, topK })
+      .pipe(map(list => list.map(p => this.normalize(p))));
+  }
+
+  searchHybrid(query: string, topK: number = 10): Observable<Product[]> {
+    return this.http
+      .post<any[]>(`${this.aiUrl}/search/hybrid`, { query, topK })
+      .pipe(map(list => list.map(p => this.normalize(p))));
   }
 }
+
+
